@@ -13,7 +13,9 @@
     margin: 0;
     perspective: 1500px;
     background-color: #f0f0f0;
-    touch-action: none;
+    touch-action: none; /* 터치 동작 비활성화 */
+    overflow: hidden; /* 스크롤 방지 */
+    position: relative; /* 중앙 정렬을 위한 위치 설정 */
   }
 
   .ticket {
@@ -45,36 +47,61 @@
     background-image: url('./Whohaticket2.jpg');
     transform: rotateY(180deg);
   }
+
+  /* 깜빡이는 이미지 스타일 */
+  .flashing-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px; /* 이미지 크기 조정 */
+    animation: blink 1s infinite; /* 깜빡임 애니메이션 */
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
 </style>
 </head>
 <body>
+<audio id="background-music" src="./song1.mp3" loop></audio> <!-- 배경 음악 -->
 <div class="ticket" id="ticket">
   <div class="ticket-side front"></div>
   <div class="ticket-side back"></div>
 </div>
 
+<!-- 깜빡이는 이미지 -->
+<img src="./DragIm.png" alt="화살표" class="flashing-image" id="flashingImage">
+
 <script>
   const ticket = document.getElementById('ticket');
+  const flashingImage = document.getElementById('flashingImage');
+  const audio = document.getElementById('background-music');
   let isDragging = false;
   let startX, startY, currentX = 0, currentY = 0;
 
-  // Function to start dragging
+  // 드래그 시작
   function startDragging(e) {
     isDragging = true;
     startX = (e.clientX || e.touches[0].clientX) - currentX;
     startY = (e.clientY || e.touches[0].clientY) - currentY;
+
+    // 깜빡이는 이미지 숨기기
+    flashingImage.style.display = 'none';
+
     document.addEventListener('mousemove', rotateTicket);
     document.addEventListener('touchmove', rotateTicket);
   }
 
-  // Function to stop dragging
+  // 드래그 종료
   function stopDragging() {
     isDragging = false;
     document.removeEventListener('mousemove', rotateTicket);
     document.removeEventListener('touchmove', rotateTicket);
   }
 
-  // Function to rotate ticket
+  // 회전 함수
   function rotateTicket(e) {
     if (isDragging) {
       requestAnimationFrame(() => {
@@ -87,7 +114,36 @@
     }
   }
 
-  // Event listeners for mouse and touch actions
+  // 이미지 제거 함수
+  function removeImage() {
+    flashingImage.style.display = 'none'; // 깜빡이는 이미지 숨기기
+    document.removeEventListener('click', removeImage); // 중복 제거
+    document.removeEventListener('touchstart', removeImage); // 중복 제거
+  }
+
+  // 터치 시작 시 이미지 숨기기
+  function handleTouchStart() {
+    flashingImage.style.display = 'none'; // 터치 시 이미지 숨기기
+  }
+
+  // 초기 음악 재생 함수
+  function playMusic() {
+    audio.play().catch(error => {
+      console.log('자동 재생이 차단되었습니다. 사용자가 클릭해야 재생됩니다.');
+    });
+  }
+
+  // 페이지 로드 시 음악 재생 시도
+  window.onload = playMusic;
+
+  // 이벤트 리스너 추가
+  document.addEventListener('click', function() {
+    playMusic(); // 클릭 시 음악 재생
+    removeImage(); // 클릭 시 이미지 숨기기
+  });
+
+  document.addEventListener('touchstart', handleTouchStart);
+  
   ticket.addEventListener('mousedown', startDragging);
   ticket.addEventListener('touchstart', startDragging);
   document.addEventListener('mouseup', stopDragging);
