@@ -13,6 +13,7 @@
     margin: 0;
     perspective: 1500px;
     background-color: #f0f0f0;
+    touch-action: none;
   }
 
   .ticket {
@@ -76,11 +77,13 @@
   // Function to rotate ticket
   function rotateTicket(e) {
     if (isDragging) {
-      const x = (e.clientX || e.touches[0].clientX) - startX;
-      const y = (e.clientY || e.touches[0].clientY) - startY;
-      currentX = x;
-      currentY = y;
-      ticket.style.transform = `rotateY(${currentX / 5}deg) rotateX(${currentY / 5}deg)`;
+      requestAnimationFrame(() => {
+        const x = (e.clientX || e.touches[0].clientX) - startX;
+        const y = (e.clientY || e.touches[0].clientY) - startY;
+        currentX = x;
+        currentY = y;
+        ticket.style.transform = `rotateY(${currentX / 5}deg) rotateX(${currentY / 5}deg)`;
+      });
     }
   }
 
