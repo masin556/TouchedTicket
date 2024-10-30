@@ -62,6 +62,15 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
   }
+
+  footer {
+    position: absolute; /* 페이지 하단에 고정 */
+    bottom: 10px; /* 바닥에서 10px 위 */
+    left: 50%; /* 수평 중앙 정렬 */
+    transform: translateX(-50%); /* 수평 중앙 정렬을 위한 변형 */
+    font-size: 14px; /* 글자 크기 조정 */
+    color: #555; /* 글자 색상 */
+  }
 </style>
 </head>
 <body>
@@ -74,6 +83,11 @@
 <!-- 깜빡이는 이미지 -->
 <img src="./DragIm.png" alt="화살표" class="flashing-image" id="flashingImage">
 
+<!-- 저작권 표시 -->
+<footer>
+  &copy; 2024 GIBEONSoftworks | ppatabox. All rights reserved.
+</footer>
+  
 <script>
   const ticket = document.getElementById('ticket');
   const flashingImage = document.getElementById('flashingImage');
